@@ -20,6 +20,8 @@
 </template>
 
 <script setup lang="ts">
+
+import { defineExpose, defineProps } from 'vue';
 interface Product {
   id: number
   title: string
@@ -33,4 +35,6 @@ interface Product {
 }
 
 defineProps<{ product: Product }>();
+
+defineExpose({});
 </script>

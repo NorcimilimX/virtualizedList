@@ -1,7 +1,11 @@
 <template>
-  <input v-model="searchQuery" placeholder="What are u searching for..." class="search-input"/>
+  <input v-model="searchQuery" placeholder="🔎 What are u searching for..." class="search-input"/>
   <transition-group name="fade">
-    <ProductItem v-for="product in displayedProducts" :key="product.id" :product="product"/>
+    <ProductItem
+        v-for="(product, index) in displayedProducts"
+        :key="product.id"
+        :product="product"
+        :ref="index === visibleProducts.length - 1 ? 'lastItemRef' : undefined"/>
   </transition-group>
   <div ref="loadTrigger" class="load-trigger"></div>
 </template>
@@ -11,7 +15,7 @@ import { ref, computed, onMounted } from 'vue';
 import ProductItem from './ProductItem.vue';
 import { useProducts } from '../composables/useProducts';
 
-const { searchQuery, visibleProducts, filteredProducts, loadMore } = useProducts();
+const { searchQuery, visibleProducts, filteredProducts, loadMore, lastItemRef } = useProducts();
 const loadTrigger = ref<HTMLElement | null>(null);
 
 const displayedProducts = computed(() =>

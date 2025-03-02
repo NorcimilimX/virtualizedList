@@ -1,6 +1,6 @@
 //here we`ll go with fetching data from api, product search, loading of new el while scrolling
 
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, onUnmounted } from 'vue';
 
 interface Product {
     id: number
@@ -20,6 +20,8 @@ export function useProducts() {
     const visibleProducts = ref<Product[]>([]);
     const limit = 10;
     let currentIndex = limit;
+    const observer = ref<IntersectionObserver | null>(null);
+    const lastItemRef = ref<HTMLElement | null>(null);
 
     const fetchProducts = async () => {
         try {
@@ -45,7 +47,29 @@ export function useProducts() {
         }
     };
 
-    onMounted(fetchProducts);
+    const observeLastItem = () => {
+        if (!lastItemRef.value) return;
 
-    return { searchQuery, visibleProducts, filteredProducts, loadMore };
+        observer.value = new IntersectionObserver(
+            (entries) => {
+                if (entries[0].isIntersecting) {
+                    console.log('⚡ hey this is last but not least el of limit - loading more!');
+                    loadMore();
+                }
+            },
+            { rootMargin: '100px' }
+        );
+
+        observer.value.observe(lastItemRef.value);
+    };
+
+    onMounted(() => {
+        fetchProducts().then(observeLastItem);
+    });
+
+    onUnmounted(() => {
+        if (observer.value) observer.value.disconnect();
+    });
+
+    return { searchQuery, visibleProducts, filteredProducts, loadMore, lastItemRef };
 }
