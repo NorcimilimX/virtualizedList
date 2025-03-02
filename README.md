@@ -1,6 +1,6 @@
 # virtualizedproductlist
 
-# https://github.com/NorcimilimX.github.io/virtualizedList
+# https://norcimilimx.github.io/virtualizedList/
 
 This template should help get you started developing with Vue 3 in Vite.
 
